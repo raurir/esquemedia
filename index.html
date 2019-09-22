@@ -9,6 +9,7 @@
 		/>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="manifest" href="site.webmanifest" />
+		<link rel="shortcut icon" href="icon.png" />
 		<link rel="apple-touch-icon" href="icon.png" />
 		<meta name="theme-color" content="#53919E" />
 	</head>
@@ -39,19 +40,25 @@
 			color: #d7eef7;
 		}
 		p {
-			color: #4dd3ff;
 			color: #fff;
-
 			font-weight: 100;
 		}
 		canvas {
+			display: block;
+			margin: auto;
+			padding: 0;
 			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
+			left: 50%;
+			margin-left: -1000px;
+			margin-top: -1000px;
+			top: 50%;
+			transition: all 2.5s ease-in-out;
+		}
+		a {
+			color: #fff;
+			text-decoration: none;
 		}
 		#animateCanvas {
-			transition: opacity 2.5s;
 			opacity: 0;
 		}
 		#animateCanvas.animate {
@@ -101,16 +108,19 @@
 
 			<h2>Contact</h2>
 			<!--p>ABN:</p-->
-			<p>linkedin.com/in/rauri/</p>
-			<p>twitter.com/raurir/</p>
+			<p><a href="https://linkedin.com/in/rauri/">linkedin.com/in/rauri/</a></p>
+			<p><a href="https://twitter.com/raurir/">twitter.com/raurir/</a></p>
 			<!-- <img src="https://api.funkyvector.com/iotd.php" id="pic" /> -->
 		</div>
 
 		<script type="text/javascript">
 			var pic = document.getElementById("pic");
+			var TAU = Math.PI * 2;
 
-			var width = 1000;
+			var width = 2000;
 			var height = 2000;
+			var cx = 0.5 * width;
+			var cy = 0.5 * height;
 			var animateCanvas = document.getElementById("animateCanvas");
 			animateCanvas.width = width;
 			animateCanvas.height = height;
@@ -122,8 +132,6 @@
 			var bgCtx = bgCanvas.getContext("2d");
 
 			function renderBG() {
-				var TAU = Math.PI * 2;
-
 				// bgCtx.clearRect(0, 0, width, height);
 				bgCtx.drawImage(animateCanvas, 0, 0);
 				// bgCanvas.classList.add("animate");
@@ -160,9 +168,7 @@
 						position: 1
 					}
 				];
-				var cx = 0.5 * width;
-				var cy = (0.2 + Math.random() * 0) * height;
-				var rotation = Math.random() * TAU;
+				var rotation = 0; //Math.random() * TAU;
 
 				var gradientRev = gradient.slice().reverse();
 
@@ -193,12 +199,10 @@
 					};
 				}
 
-				var x, y;
-
 				for (var i = 0; i < data.length; i += 4) {
 					var index = i / 4;
-					x = index % width;
-					y = Math.floor(index / width);
+					var x = index % width;
+					var y = Math.floor(index / width);
 					var dx = cx - x;
 					var dy = cy - y;
 					var angle =
@@ -227,135 +231,20 @@
 						g = lerp(start.g, end.g, stepRatio);
 						b = lerp(start.b, end.b, stepRatio);
 						a = lerp(start.a, end.a, stepRatio);
-					} else {
-						// console.warn("error finding gradient steps", exact, start, end, ratio);
-						//return null;
 					}
 
 					data[i] = r;
 					data[i + 1] = g;
 					data[i + 2] = b;
 					data[i + 3] = a;
-				} // antialias the line
-
-				var stripeCoords = [];
-
-				for (
-					var j = -2;
-					j < 2000 && x > 0 && x < width && y > 0 && y < height;
-					j++
-				) {
-					// j is distance from centre of rotation...
-					x = Math.round(cx + Math.sin(rotation) * j);
-					y = Math.round(cy + Math.cos(rotation) * j);
-
-					var _index = (y * width + x) * 4;
-
-					stripeCoords.push({
-						x: x,
-						y: y,
-						index: _index
-					});
 				}
-
-				function getPixel(x, y) {
-					if (x > 0 && x < width && y > 0 && y < height) {
-						var _index2 = (y * width + x) * 4;
-
-						return {
-							r: data[_index2],
-							g: data[_index2 + 1],
-							b: data[_index2 + 2],
-							a: data[_index2 + 3]
-						};
-					}
-
-					return null; // pixel is off screen
-				}
-
-				function getNeighbours(x, y) {
-					return [
-						getPixel(x - 1, y - 1), // top left
-						getPixel(x, y - 1), // top centre
-						getPixel(x + 1, y - 1), // top right
-						getPixel(x - 1, y), // middle left
-						getPixel(x, y), // middle centre
-						getPixel(x + 1, y), // middle right
-						getPixel(x - 1, y + 1), // bottom left
-						getPixel(x, y + 1), // bottom centre
-						getPixel(x + 1, y + 1)
-					].filter(Boolean); // remove off screen pixels
-				}
-
-				function getAverage(x, y) {
-					var pixels = getNeighbours(x, y); // calculate totals
-
-					var totals = pixels.reduce(
-						function(acc, _ref) {
-							var r = _ref.r,
-								g = _ref.g,
-								b = _ref.b,
-								a = _ref.a;
-							return {
-								r: r + acc.r,
-								g: g + acc.g,
-								b: b + acc.b,
-								a: a + acc.a
-							};
-						},
-						{
-							r: 0,
-							g: 0,
-							b: 0,
-							a: 0
-						}
-					); // calculate average
-
-					var average = {
-						r: Math.round(totals.r / pixels.length),
-						g: Math.round(totals.g / pixels.length),
-						b: Math.round(totals.b / pixels.length),
-						a: Math.round(totals.a / pixels.length)
-					};
-					return average;
-				}
-
-				var averages = stripeCoords.map(function(_ref2) {
-					var x = _ref2.x,
-						y = _ref2.y,
-						index = _ref2.index;
-
-					var _getAverage = getAverage(x, y),
-						r = _getAverage.r,
-						g = _getAverage.g,
-						b = _getAverage.b,
-						a = _getAverage.a;
-
-					return {
-						index: index,
-						r: r,
-						g: g,
-						b: b,
-						a: a
-					};
-				}); // draw antialiased pixels back to canvas
-
-				averages.forEach(function(_ref3) {
-					var index = _ref3.index,
-						r = _ref3.r,
-						g = _ref3.g,
-						b = _ref3.b,
-						a = _ref3.a;
-					data[index] = r;
-					data[index + 1] = g;
-					data[index + 2] = b;
-					data[index + 3] = a;
-				});
 
 				setTimeout(function() {
 					animateCtx.putImageData(imageData, 0, 0);
 					animateCanvas.classList.add("animate");
-					// bgCanvas.classList.remove("animate");
+					var transform = "rotate(" + Math.round(Math.random() * 360) + "deg)";
+					animateCanvas.style.transform = transform;
+					bgCanvas.style.transform = transform;
 				}, 2500);
 			}
 
