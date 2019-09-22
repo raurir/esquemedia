@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html class="no-js" lang="">
+<html>
 	<head>
 		<meta charset="utf-8" />
-		<title></title>
-		<meta name="description" content="" />
+		<title>EsQue Design Ltd</title>
+		<meta
+			name="description"
+			content="EsQue Design is a web application creation studio"
+		/>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="manifest" href="site.webmanifest" />
 		<link rel="apple-touch-icon" href="icon.png" />
-		<!-- Place favicon.ico in the root directory -->
-		<meta name="theme-color" content="#fafafa" />
+		<meta name="theme-color" content="#53919E" />
 	</head>
 	<style type="text/css">
 		body {
@@ -17,19 +19,30 @@
 			padding: 0;
 			font-family: helvetica;
 		}
-		#header {
+		#content {
 			position: absolute;
-			width: 100%;
-			text-align: center;
-			margin: 50px 0 100px;
+			margin: 50px 100px 100px;
+		}
+		h1 {
+			display: inline-block;
+			color: #d7eef7;
+			border-bottom: 2px solid rgb(215, 238, 247, 0.8);
+			padding-bottom: 12px;
+		}
+		h2 {
+			margin-top: 1.5em;
 		}
 		h1,
 		h2,
 		h3 {
+			font-weight: 300;
 			color: #d7eef7;
 		}
 		p {
 			color: #4dd3ff;
+			color: #fff;
+
+			font-weight: 100;
 		}
 		canvas {
 			position: fixed;
@@ -37,70 +50,123 @@
 			left: 0;
 			width: 100%;
 		}
-		#pic {
+		#animateCanvas {
+			transition: opacity 2.5s;
+			opacity: 0;
+		}
+		#animateCanvas.animate {
+			opacity: 1;
+		}
+		/*#pic {
 			background: rgba(0, 0, 0, 0.8);
 			border-radius: 20px;
 			box-shadow: 0 0 16px rgba(0, 0, 0, 0.8);
 			width: 80%;
 			max-width: 400px;
+		}*/
+		@media only screen and (max-width: 760px) {
+			#content {
+				margin: 60px 20px;
+			}
 		}
 	</style>
 	<body>
-		<canvas id="bg"></canvas>
-		<section id="header">
-			<h1>Esque Design Ltd</h1>
-			<h2>Contact</h2>
-			<p>ABN:</p>
-			<p>Contact:</p>
-			<p>linked in</p>
-			<p>twitter</p>
+		<canvas id="bgCanvas"></canvas>
+		<canvas id="animateCanvas"></canvas>
+		<div id="content">
+			<h1>EsQue Design Ltd</h1>
+
+			<h2>About</h2>
+			<p>
+				More than 20 years experience creating web applications and static
+				websites
+			</p>
+			<!--p>High performant mobile applications</p>
+			<p>Developing with a designer eye</p>
+			<p>
+				Currently based in Sydney with experience working in London and Brisbane
+			</p>
+
 			<h2>Work</h2>
 			<h3>Airtasker</h3>
+			<p>
+				Part of the original team that made launched the Airtasker application
+			</p>
 			<h3>SquashMatch</h3>
+			<p>Online Squash community running since 2010</p>
 			<h3>FunkyVector</h3>
+			<p>Generative art website with print on demand</p>
 			<h3>MadeComfy</h3>
-			<p>work</p>
-			<img src="https://api.funkyvector.com/iotd.php" id="pic" />
-		</section>
+			<p>Short term lease management</p-->
+
+			<h2>Contact</h2>
+			<!--p>ABN:</p-->
+			<p>linkedin.com/in/rauri/</p>
+			<p>twitter.com/raurir/</p>
+			<!-- <img src="https://api.funkyvector.com/iotd.php" id="pic" /> -->
+		</div>
 
 		<script type="text/javascript">
 			var pic = document.getElementById("pic");
 
+			var width = 1000;
+			var height = 2000;
+			var animateCanvas = document.getElementById("animateCanvas");
+			animateCanvas.width = width;
+			animateCanvas.height = height;
+			var animateCtx = animateCanvas.getContext("2d");
+
+			var bgCanvas = document.getElementById("bgCanvas");
+			bgCanvas.width = width;
+			bgCanvas.height = height;
+			var bgCtx = bgCanvas.getContext("2d");
+
 			function renderBG() {
 				var TAU = Math.PI * 2;
 
+				// bgCtx.clearRect(0, 0, width, height);
+				bgCtx.drawImage(animateCanvas, 0, 0);
+				// bgCanvas.classList.add("animate");
+				animateCtx.clearRect(0, 0, width, height);
+				animateCanvas.classList.remove("animate");
+
 				var gradient = [
-					{ r: 250, g: 250, b: 249, a: 0, position: 0 },
 					{
-						r: 99,
-						g: 201,
-						b: 199,
-						a: 100,
+						r: 250 + Math.random() * 20,
+						g: 250 + Math.random() * 20,
+						b: 249 + Math.random() * 20,
+						a: 0 + Math.random() * 40,
+						position: 0
+					},
+					{
+						r: 99 + Math.random() * 20,
+						g: 201 + Math.random() * 20,
+						b: 199 + Math.random() * 20,
+						a: 50 + Math.random() * 20,
 						position: 0.1 + Math.random() * 0.3
 					},
 					{
-						r: 75,
-						g: 150,
-						b: 163,
-						a: 140,
+						r: 75 + Math.random() * 20,
+						g: 150 + Math.random() * 20,
+						b: 163 + Math.random() * 20,
+						a: 100 + Math.random() * 100,
 						position: 0.6 + Math.random() * 0.3
 					},
-					{ r: 52, g: 101, b: 127, a: 200, position: 1 }
+					{
+						r: 25 + Math.random() * 50,
+						g: 50 + Math.random() * 50,
+						b: 60 + Math.random() * 50,
+						a: 200 + Math.random() * 55,
+						position: 1
+					}
 				];
-				var width = 1000;
-				var height = 2000;
-				var cx = (0.4 + Math.random() * 0.2) * width;
-				var cy = (0.4 + Math.random() * 0.2) * height;
+				var cx = 0.5 * width;
+				var cy = (0.2 + Math.random() * 0) * height;
 				var rotation = Math.random() * TAU;
 
 				var gradientRev = gradient.slice().reverse();
 
-				var canvas = document.getElementById("bg");
-				canvas.width = width;
-				canvas.height = height;
-
-				var ctx = canvas.getContext("2d");
-				var imageData = ctx.getImageData(0, 0, width, height);
+				var imageData = animateCtx.getImageData(0, 0, width, height);
 				var data = imageData.data;
 
 				function lerp(a, b, ratio) {
@@ -285,12 +351,17 @@
 					data[index + 2] = b;
 					data[index + 3] = a;
 				});
-				ctx.putImageData(imageData, 0, 0);
+
+				setTimeout(function() {
+					animateCtx.putImageData(imageData, 0, 0);
+					animateCanvas.classList.add("animate");
+					// bgCanvas.classList.remove("animate");
+				}, 2500);
 			}
 
-			setInterval(function() {
-				pic.src = "https://api.funkyvector.com/iotd.php?" + Math.random();
-			}, 100000);
+			// setInterval(function() {
+			// 	pic.src = "https://api.funkyvector.com/iotd.php?" + Math.random();
+			// }, 100000);
 			renderBG();
 			setInterval(renderBG, 5000);
 		</script>
