@@ -1,3 +1,3 @@
-esquemedi.com
+esquemedia.com
 
 very special
